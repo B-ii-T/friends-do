@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "173897243620",
+    "project_id": "friends-do",
+    "storage_bucket": "friends-do.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173897243620:android:d0fc7e41bd6112d8c5c5f1",
+        "android_client_info": {
+          "package_name": "com.bit.friendsdo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173897243620-ld8oi2v6ureik0etrklh1b1snd4kj1bu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3n08qx8_aKSBaNR8I-UgINwux0UKJZPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173897243620-ld8oi2v6ureik0etrklh1b1snd4kj1bu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
