@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 
 import androidx.annotation.NonNull;
@@ -47,14 +48,16 @@ public class TaskListFragment extends Fragment {
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 for (QueryDocumentSnapshot document : querySnapshot) {
+                    String id = document.getId();
                     String owner = document.getString("owner");
                     String taskText = document.getString("taskText");
                     Boolean taskDone = document.getBoolean("taskDone");
                     Date creationDate = document.getDate("creationDate");
                     Date doneDate = document.getDate("doneDate");
-
-                    friendTasks.add(new FriendTask(taskText, creationDate, owner, taskDone, doneDate));
-                    adapter.notifyDataSetChanged();
+                    if (!taskDone) {
+                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             } else {
                 Log.e("Firestore", "Error getting documents: ", task.getException());
@@ -71,13 +74,44 @@ public class TaskListFragment extends Fragment {
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
-
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                friendTasks.remove(position);
-                adapter.notifyItemRemoved(position);
+                FriendTask task = friendTasks.get(position);
+
+                // Check if the task is already marked as done
+                if (!task.isTaskDone()) {
+                    // Update the task attributes
+                    task.setTaskDone(true);
+                    task.setDoneDate(new Date()); // Set the current date as doneDate
+
+                    // Get the Firestore document ID for this task
+                    String documentId = task.getId(); // Retrieve the document ID from the task object
+
+                    // Update the task in Firestore
+                    taskCollection.document(documentId).update(
+                            "taskDone", true,
+                            "doneDate", task.getDoneDate()
+                    ).addOnSuccessListener(aVoid -> {
+                        // Remove the item from the list if it's done
+                        friendTasks.remove(position);
+                        adapter.notifyItemRemoved(position);
+                    }).addOnFailureListener(e -> {
+                        // Handle the error
+                        Log.e("Firestore", "Error updating task: ", e);
+                        Toast.makeText(getContext(), "Error updating task", Toast.LENGTH_SHORT).show();
+                        // Revert changes
+                        task.setTaskDone(false);
+                        task.setDoneDate(null);
+                        adapter.notifyItemChanged(position);
+                    });
+                } else {
+                    // Task is already done, remove it from the list and notify the adapter
+                    friendTasks.remove(position);
+                    adapter.notifyItemRemoved(position);
+                }
             }
+
         }).attachToRecyclerView(recyclerView);
 
         return rootView;
