@@ -8,24 +8,45 @@
         android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/owner_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Owner"/>
+        <RelativeLayout
+            android:id="@+id/info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/owner_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owner"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+            <TextView
+                android:id="@+id/timestamp_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:12:12"
+                android:textSize="13dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/owner_textview"
+                android:layout_centerVertical="true" />
+            <TextView
+                android:id="@+id/creation_date_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12-12-2023\n12:12:12"
+                android:textAlignment="textEnd"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/task_text_textview"
             android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task text"
-            android:layout_below="@id/owner_textview"/>
-        <TextView
-            android:id="@+id/creation_date_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12-12-2023"
-            android:layout_alignParentEnd="true"/>
+            android:layout_below="@id/info_container"/>
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

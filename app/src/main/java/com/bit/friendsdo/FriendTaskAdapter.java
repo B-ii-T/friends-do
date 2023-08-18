@@ -31,16 +31,22 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FriendTask friendTask = friendTasks.get(position);
-
-        // Bind data to the views in the ViewHolder
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
-
-        String formattedCreationDate = dateFormat.format(friendTask.getCreationDate());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
         holder.ownerText.setText(friendTask.getOwner());
         holder.tasktext.setText(friendTask.getTaskText());
-        holder.dateText.setText(formattedCreationDate);
-        // Bind more data here for other task properties
+        if (friendTask.isTaskDone()) {
+            String formattedDoneDate = dateFormat.format(friendTask.getDoneDate());
+            String formattedDoneTime = timeFormat.format(friendTask.getDoneDate());
+            holder.dateText.setText(formattedDoneDate);
+            holder.timeText.setText(formattedDoneTime);
+        } else {
+            String formattedCreationDate = dateFormat.format(friendTask.getCreationDate());
+            String formattedCreationTime = timeFormat.format(friendTask.getCreationDate());
+            holder.dateText.setText(formattedCreationDate);
+            holder.timeText.setText(formattedCreationTime);
+        }
     }
 
     @Override
@@ -49,7 +55,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ownerText, tasktext, dateText;
+        TextView ownerText, tasktext, dateText, timeText;
         // Declare other views here for other task properties
 
         public ViewHolder(View itemView) {
@@ -57,7 +63,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             ownerText = itemView.findViewById(R.id.owner_textview);
             tasktext = itemView.findViewById(R.id.task_text_textview);
             dateText = itemView.findViewById(R.id.creation_date_textview);
-            // Initialize other views here
+            timeText = itemView.findViewById(R.id.timestamp_text_view);
         }
     }
 }
