@@ -58,4 +58,7 @@ public class FriendTask {
         this.doneDate = doneDate;
     }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 }
