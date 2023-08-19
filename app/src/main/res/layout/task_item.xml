@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="8dp"
     android:layout_margin="16dp">
 
     <RelativeLayout
@@ -14,18 +18,22 @@
             android:layout_height="wrap_content">
             <TextView
                 android:textStyle="bold"
+                android:textSize="18dp"
                 android:id="@+id/owner_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Owner"
+                android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"/>
             <TextView
                 android:id="@+id/timestamp_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:gravity="center"
                 android:text="12:12:12"
-                android:textSize="13dp"
+                android:textSize="12dp"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/owner_textview"
                 android:layout_centerVertical="true" />
@@ -33,7 +41,7 @@
                 android:id="@+id/creation_date_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12-12-2023\n12:12:12"
+                android:text="12-12-2023"
                 android:textAlignment="textEnd"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"/>
@@ -42,6 +50,7 @@
         <TextView
             android:id="@+id/task_text_textview"
             android:layout_marginTop="16dp"
+            android:textSize="14dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task text"

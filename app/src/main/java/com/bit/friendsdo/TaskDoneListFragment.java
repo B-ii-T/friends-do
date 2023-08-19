@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,14 +30,19 @@ public class TaskDoneListFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference taskCollection = db.collection("FriendTask");
     FriendTaskAdapter adapter = new FriendTaskAdapter(friendTasks);
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.done_task_list_fragment, container, false);
+        TextView emptyDoneText = rootView.findViewById(R.id.no_done_tasks);
+
 
         recyclerView = rootView.findViewById(R.id.done_task_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
+
+        checkEmpty(emptyDoneText);
 
         taskCollection.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -51,6 +57,7 @@ public class TaskDoneListFragment extends Fragment {
                     if (taskDone) {
                         friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
                         adapter.notifyDataSetChanged();
+                        checkEmpty(emptyDoneText);
                     }
                 }
             } else {
@@ -68,6 +75,7 @@ public class TaskDoneListFragment extends Fragment {
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
+
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
@@ -90,6 +98,7 @@ public class TaskDoneListFragment extends Fragment {
                         // Remove the item from the list if it's done
                         friendTasks.remove(position);
                         adapter.notifyItemRemoved(position);
+                        checkEmpty(emptyDoneText);
                     }).addOnFailureListener(e -> {
                         // Handle the error
                         Log.e("Firestore", "Error updating task: ", e);
@@ -97,11 +106,14 @@ public class TaskDoneListFragment extends Fragment {
                         // Revert changes
                         task.setTaskDone(true);
                         adapter.notifyItemChanged(position);
+                        checkEmpty(emptyDoneText);
                     });
                 } else {
                     // Task is already done, remove it from the list and notify the adapter
                     friendTasks.remove(position);
                     adapter.notifyItemRemoved(position);
+                    checkEmpty(emptyDoneText);
+
                 }
             }
 
@@ -109,5 +121,13 @@ public class TaskDoneListFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    public void checkEmpty (TextView textview) {
+        if(friendTasks.isEmpty()){
+            textview.setVisibility(View.VISIBLE);
+        }else{
+            textview.setVisibility(View.GONE);
+        }
     }
 }

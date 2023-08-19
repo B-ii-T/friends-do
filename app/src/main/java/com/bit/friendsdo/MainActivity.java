@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.nav_bar);
+        bottomNavigationView.setItemActiveIndicatorEnabled(false);
 
         // Set the initial fragment
         getSupportFragmentManager().beginTransaction()

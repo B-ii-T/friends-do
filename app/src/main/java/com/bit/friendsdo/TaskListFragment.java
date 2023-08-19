@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -41,6 +43,8 @@ public class TaskListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.task_list_fragment, container, false);
 
         recyclerView = rootView.findViewById(R.id.task_recycler_view);
+        TextView emptyText = rootView.findViewById(R.id.no_tasks);
+        checkEmpty(emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -57,6 +61,7 @@ public class TaskListFragment extends Fragment {
                     if (!taskDone) {
                         friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
                         adapter.notifyDataSetChanged();
+                        checkEmpty(emptyText);
                     }
                 }
             } else {
@@ -96,6 +101,7 @@ public class TaskListFragment extends Fragment {
                         // Remove the item from the list if it's done
                         friendTasks.remove(position);
                         adapter.notifyItemRemoved(position);
+                        checkEmpty(emptyText);
                     }).addOnFailureListener(e -> {
                         // Handle the error
                         Log.e("Firestore", "Error updating task: ", e);
@@ -104,16 +110,25 @@ public class TaskListFragment extends Fragment {
                         task.setTaskDone(false);
                         task.setDoneDate(null);
                         adapter.notifyItemChanged(position);
+                        checkEmpty(emptyText);
                     });
                 } else {
                     // Task is already done, remove it from the list and notify the adapter
                     friendTasks.remove(position);
                     adapter.notifyItemRemoved(position);
+                    checkEmpty(emptyText);
                 }
             }
 
         }).attachToRecyclerView(recyclerView);
 
         return rootView;
+    }
+    public void checkEmpty (TextView textview) {
+        if(friendTasks.isEmpty()){
+            textview.setVisibility(View.VISIBLE);
+        }else{
+            textview.setVisibility(View.GONE);
+        }
     }
 }

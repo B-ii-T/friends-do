@@ -10,4 +10,13 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/task_item"/>
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/no_done_tasks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No completed tasks :("
+        android:textSize="25dp"/>
+
 </RelativeLayout>
