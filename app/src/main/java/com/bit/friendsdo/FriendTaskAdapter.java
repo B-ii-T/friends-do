@@ -55,8 +55,9 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
         }
 
         // Set click listener
-        holder.itemView.setOnClickListener(view -> {
+        holder.itemView.setOnLongClickListener(view -> {
             showDeleteConfirmationDialog(holder.itemView, friendTask.getId());
+            return true;
         });
     }
 
