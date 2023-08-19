@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -53,11 +54,12 @@ public class TaskDoneListFragment extends Fragment {
         recyclerView.setVisibility(View.GONE);
         emptyDoneText.setVisibility(View.GONE);
 
-        taskCollection.get().addOnCompleteListener(task -> {
+        taskCollection.orderBy("doneDate", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
             doneSpinner.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             checkEmpty(emptyDoneText);
             if (task.isSuccessful()) {
+                friendTasks.clear();
                 QuerySnapshot querySnapshot = task.getResult();
                 for (QueryDocumentSnapshot document : querySnapshot) {
                     String id = document.getId();

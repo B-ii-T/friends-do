@@ -22,6 +22,7 @@ import com.bit.friendsdo.FriendTask;
 import com.bit.friendsdo.FriendTaskAdapter;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -59,11 +60,12 @@ public class TaskListFragment extends Fragment {
         emptyText.setVisibility(View.GONE);
 
 
-        taskCollection.get().addOnCompleteListener(task -> {
+        taskCollection.orderBy("creationDate", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
             progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             checkEmpty(emptyText);
             if (task.isSuccessful()) {
+                friendTasks.clear();
                 QuerySnapshot querySnapshot = task.getResult();
                 for (QueryDocumentSnapshot document : querySnapshot) {
                     String id = document.getId();
