@@ -27,18 +27,19 @@ import java.util.List;
 
 public class TaskDoneListFragment extends Fragment {
     private RecyclerView recyclerView;
-    private List<FriendTask> friendTasks = new ArrayList<>();
+    private static List<FriendTask> friendTasks = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference taskCollection = db.collection("FriendTask");
     FriendTaskAdapter adapter = new FriendTaskAdapter(friendTasks);
 
     ProgressBar doneSpinner;
+    public static TextView emptyDoneText;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.done_task_list_fragment, container, false);
-        TextView emptyDoneText = rootView.findViewById(R.id.no_done_tasks);
+        emptyDoneText = rootView.findViewById(R.id.no_done_tasks);
 
 
         recyclerView = rootView.findViewById(R.id.done_task_recycler_view);
@@ -134,10 +135,10 @@ public class TaskDoneListFragment extends Fragment {
         return rootView;
     }
 
-    public void checkEmpty (TextView textview) {
-        if(friendTasks.isEmpty()){
+    public static void checkEmpty(TextView textview) {
+        if (friendTasks.isEmpty()) {
             textview.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             textview.setVisibility(View.GONE);
         }
     }

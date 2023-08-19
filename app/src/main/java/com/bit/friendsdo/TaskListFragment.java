@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,11 +34,12 @@ import java.util.List;
 public class TaskListFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<FriendTask> friendTasks = new ArrayList<>();
+    private static List<FriendTask> friendTasks = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference taskCollection = db.collection("FriendTask");
     FriendTaskAdapter adapter = new FriendTaskAdapter(friendTasks);
     private ProgressBar progressBar;
+    public static TextView emptyText;
 
     @Nullable
     @Override
@@ -46,7 +49,7 @@ public class TaskListFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.task_recycler_view);
         progressBar = rootView.findViewById(R.id.progress_bar);
 
-        TextView emptyText = rootView.findViewById(R.id.no_tasks);
+        emptyText = rootView.findViewById(R.id.no_tasks);
         checkEmpty(emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -72,6 +75,7 @@ public class TaskListFragment extends Fragment {
                     if (!taskDone) {
                         friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
                         adapter.notifyDataSetChanged();
+                        checkEmpty(emptyText);
                     }
                 }
             } else {
@@ -83,6 +87,7 @@ public class TaskListFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+
         // Implement swipe-to-delete directly within the fragment
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 0, ItemTouchHelper.RIGHT) {
@@ -90,6 +95,7 @@ public class TaskListFragment extends Fragment {
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
+
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
@@ -135,10 +141,11 @@ public class TaskListFragment extends Fragment {
 
         return rootView;
     }
-    public void checkEmpty (TextView textview) {
-        if(friendTasks.isEmpty()){
+
+    public static void checkEmpty(TextView textview) {
+        if (friendTasks.isEmpty()) {
             textview.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             textview.setVisibility(View.GONE);
         }
     }
