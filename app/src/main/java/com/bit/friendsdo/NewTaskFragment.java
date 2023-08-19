@@ -47,7 +47,7 @@ public class NewTaskFragment extends Fragment {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 CollectionReference friendsTaskCollection = db.collection("FriendTask");
 
-                FriendTask task = new FriendTask(taskEditText.getText().toString().trim(), new Date(), name, false, null);
+                FriendTask task = new FriendTask(taskEditText.getText().toString().trim(), new Date(), name, false, null, "");
                 friendsTaskCollection.add(task);
                 Toast.makeText(getContext(), "task added", Toast.LENGTH_SHORT).show();
                 taskEditText.setText("");

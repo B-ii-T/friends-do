@@ -68,8 +68,9 @@ public class TaskDoneListFragment extends Fragment {
                     Boolean taskDone = document.getBoolean("taskDone");
                     Date creationDate = document.getDate("creationDate");
                     Date doneDate = document.getDate("doneDate");
+                    String doneOwner = document.getString("doneOwner");
                     if (taskDone) {
-                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
+                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate, doneOwner));
                         adapter.notifyDataSetChanged();
                         checkEmpty(emptyDoneText);
                     }
@@ -100,7 +101,8 @@ public class TaskDoneListFragment extends Fragment {
                     // Update the task attributes
                     task.setTaskDone(false);
                     task.setCreationDate(new Date()); // Set the current date as doneDate
-
+                    task.setDoneDate(null);
+                    task.setDoneOwner("");
                     // Get the Firestore document ID for this task
                     String documentId = task.getId(); // Retrieve the document ID from the task object
 

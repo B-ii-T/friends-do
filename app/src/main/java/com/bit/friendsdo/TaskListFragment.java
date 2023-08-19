@@ -1,5 +1,7 @@
 package com.bit.friendsdo;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,8 +75,9 @@ public class TaskListFragment extends Fragment {
                     Boolean taskDone = document.getBoolean("taskDone");
                     Date creationDate = document.getDate("creationDate");
                     Date doneDate = document.getDate("doneDate");
+                    String doneOwnwe = document.getString("doneOwner");
                     if (!taskDone) {
-                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
+                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate, doneOwnwe));
                         adapter.notifyDataSetChanged();
                         checkEmpty(emptyText);
                     }
@@ -107,14 +110,16 @@ public class TaskListFragment extends Fragment {
                     // Update the task attributes
                     task.setTaskDone(true);
                     task.setDoneDate(new Date()); // Set the current date as doneDate
-
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+                    task.setDoneOwner(sharedPreferences.getString("user_name", ""));
                     // Get the Firestore document ID for this task
                     String documentId = task.getId(); // Retrieve the document ID from the task object
 
                     // Update the task in Firestore
                     taskCollection.document(documentId).update(
                             "taskDone", true,
-                            "doneDate", task.getDoneDate()
+                            "doneDate", task.getDoneDate(),
+                            "doneOwner", task.getDoneOwner()
                     ).addOnSuccessListener(aVoid -> {
                         // Remove the item from the list if it's done
                         friendTasks.remove(position);

@@ -49,11 +49,17 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             String formattedDoneTime = timeFormat.format(friendTask.getDoneDate());
             holder.dateText.setText(formattedDoneDate);
             holder.timeText.setText(formattedDoneTime);
+            if(friendTask.getDoneOwner().equals("")){
+                holder.doneOwnerText.setVisibility(View.GONE);
+            }else{
+                holder.doneOwnerText.setText(friendTask.getDoneOwner());
+            }
         } else {
             String formattedCreationDate = dateFormat.format(friendTask.getCreationDate());
             String formattedCreationTime = timeFormat.format(friendTask.getCreationDate());
             holder.dateText.setText(formattedCreationDate);
             holder.timeText.setText(formattedCreationTime);
+            holder.doneOwnerText.setVisibility(View.GONE);
         }
 
         // Set click listener
@@ -75,7 +81,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ownerText, tasktext, dateText, timeText;
+        TextView ownerText, tasktext, dateText, timeText, doneOwnerText;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +89,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             tasktext = itemView.findViewById(R.id.task_text_textview);
             dateText = itemView.findViewById(R.id.creation_date_textview);
             timeText = itemView.findViewById(R.id.timestamp_text_view);
+            doneOwnerText = itemView.findViewById(R.id.done_owner_text_view);
         }
     }
 
