@@ -49,7 +49,6 @@ public class TaskListFragment extends Fragment {
 
         recyclerView = rootView.findViewById(R.id.task_recycler_view);
         progressBar = rootView.findViewById(R.id.progress_bar);
-
         emptyText = rootView.findViewById(R.id.no_tasks);
         checkEmpty(emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());

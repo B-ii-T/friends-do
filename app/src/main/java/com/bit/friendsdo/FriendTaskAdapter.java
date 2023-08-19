@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bit.friendsdo.FriendTask;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -55,10 +54,9 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             holder.timeText.setText(formattedCreationTime);
         }
 
-        // Set long click listener
-        holder.itemView.setOnLongClickListener(view -> {
-            showDeleteConfirmationDialog(holder.itemView, position);
-            return true; // Return true to consume the long click event
+        // Set click listener
+        holder.itemView.setOnClickListener(view -> {
+            showDeleteConfirmationDialog(holder.itemView, friendTask.getId());
         });
     }
 
@@ -79,8 +77,8 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
         }
     }
 
-    private void showDeleteConfirmationDialog( View view, int position) {
-        Context context = view.getContext(); // Get the context from the itemView
+    private void showDeleteConfirmationDialog(View view, String taskId) {
+        Context context = view.getContext();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Confirm Delete")
@@ -88,29 +86,36 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteTask(view, position);
+                        deleteTaskById(taskId, context); // Pass the context here
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void deleteTask(View view, int position) {
-        Context context = view.getContext();
-
-        FriendTask task = friendTasks.get(position);
-        String documentId = task.getId();
-
-        taskCollection.document(documentId).delete()
+    private void deleteTaskById(String taskId, Context context) {
+        taskCollection.document(taskId).delete()
                 .addOnSuccessListener(aVoid -> {
-                    friendTasks.remove(position);
-                    notifyItemRemoved(position);
-                    Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show();
-                    TaskDoneListFragment.checkEmpty(TaskDoneListFragment.emptyDoneText);
-                    TaskListFragment.checkEmpty(TaskListFragment.emptyText);
+                    int position = findPositionById(taskId);
+                    if (position != -1) {
+                        friendTasks.remove(position);
+                        notifyItemRemoved(position);
+                        Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Error deleting task", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+
+
+    private int findPositionById(String taskId) {
+        for (int i = 0; i < friendTasks.size(); i++) {
+            if (friendTasks.get(i).getId().equals(taskId)) {
+                return i;
+            }
+        }
+        return -1; // Task not found
     }
 }
