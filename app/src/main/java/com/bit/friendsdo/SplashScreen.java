@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -20,6 +21,7 @@ public class SplashScreen extends AppCompatActivity {
 
         LottieAnimationView animationView = findViewById(R.id.animated_logo);
         TextView textView = findViewById(R.id.label_textview);
+        ImageView bitLogo = findViewById(R.id.bit_logo);
 
         animationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
@@ -48,13 +50,17 @@ public class SplashScreen extends AppCompatActivity {
 
         // Create an ObjectAnimator to fade in the TextView
         ObjectAnimator fadeInAnimator = ObjectAnimator.ofFloat(textView, "alpha", 0f, 1f);
+        ObjectAnimator fadeInAnimatorImg = ObjectAnimator.ofFloat(bitLogo, "alpha", 0f, 1f);
         fadeInAnimator.setDuration(1000); // Set the duration of the fade-in animation
-        fadeInAnimator.setStartDelay(500); // Set a delay before the animation starts
+        fadeInAnimatorImg.setDuration(1000); // Set the duration of the fade-in animation
+        fadeInAnimator.setStartDelay(300); // Set a delay before the animation starts
+        fadeInAnimatorImg.setStartDelay(800); // Set a delay before the animation starts
         fadeInAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
                 // Make the TextView visible when the animation starts
                 textView.setVisibility(View.VISIBLE);
+                bitLogo.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -73,5 +79,6 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
         fadeInAnimator.start(); // Start the animation
+        fadeInAnimatorImg.start(); // Start the animation
     }
 }
