@@ -62,9 +62,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             holder.doneOwnerText.setVisibility(View.GONE);
         }
 
-        // Set click listener
         holder.itemView.setOnLongClickListener(view -> {
-            //get username from shared preferences and assign it to name
             sharedPreferences = holder.itemView.getContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
             if (friendTask.getOwner().equals(sharedPreferences.getString("user_name", ""))) {
                 showDeleteConfirmationDialog(holder.itemView, friendTask.getId());
@@ -103,7 +101,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        deleteTaskById(taskId, context); // Pass the context here
+                        deleteTaskById(taskId, context);
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -132,6 +130,6 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                 return i;
             }
         }
-        return -1; // Task not found
+        return -1;
     }
 }

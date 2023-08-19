@@ -96,22 +96,18 @@ public class TaskDoneListFragment extends Fragment {
                 int position = viewHolder.getAdapterPosition();
                 FriendTask task = friendTasks.get(position);
 
-                // Check if the task is already marked as done
                 if (task.isTaskDone()) {
-                    // Update the task attributes
                     task.setTaskDone(false);
-                    task.setCreationDate(new Date()); // Set the current date as doneDate
+                    task.setCreationDate(new Date());
                     task.setDoneDate(null);
                     task.setDoneOwner("");
-                    // Get the Firestore document ID for this task
-                    String documentId = task.getId(); // Retrieve the document ID from the task object
 
-                    // Update the task in Firestore
+                    String documentId = task.getId();
+
                     taskCollection.document(documentId).update(
                             "taskDone", false,
                             "creationDate", task.getCreationDate()
                     ).addOnSuccessListener(aVoid -> {
-                        // Remove the item from the list if it's done
                         friendTasks.remove(position);
                         adapter.notifyItemRemoved(position);
                         checkEmpty(emptyDoneText);
@@ -125,7 +121,6 @@ public class TaskDoneListFragment extends Fragment {
                         checkEmpty(emptyDoneText);
                     });
                 } else {
-                    // Task is already done, remove it from the list and notify the adapter
                     friendTasks.remove(position);
                     adapter.notifyItemRemoved(position);
                     checkEmpty(emptyDoneText);

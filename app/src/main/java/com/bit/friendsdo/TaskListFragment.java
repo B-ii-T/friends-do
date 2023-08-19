@@ -11,8 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,15 +18,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bit.friendsdo.FriendTask;
-import com.bit.friendsdo.FriendTaskAdapter;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,8 +85,6 @@ public class TaskListFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-
-        // Implement swipe-to-delete directly within the fragment
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 0, ItemTouchHelper.RIGHT) {
             @Override
@@ -105,31 +97,23 @@ public class TaskListFragment extends Fragment {
                 int position = viewHolder.getAdapterPosition();
                 FriendTask task = friendTasks.get(position);
 
-                // Check if the task is already marked as done
                 if (!task.isTaskDone()) {
-                    // Update the task attributes
                     task.setTaskDone(true);
-                    task.setDoneDate(new Date()); // Set the current date as doneDate
+                    task.setDoneDate(new Date());
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
                     task.setDoneOwner(sharedPreferences.getString("user_name", ""));
-                    // Get the Firestore document ID for this task
-                    String documentId = task.getId(); // Retrieve the document ID from the task object
-
-                    // Update the task in Firestore
+                    String documentId = task.getId();
                     taskCollection.document(documentId).update(
                             "taskDone", true,
                             "doneDate", task.getDoneDate(),
                             "doneOwner", task.getDoneOwner()
                     ).addOnSuccessListener(aVoid -> {
-                        // Remove the item from the list if it's done
                         friendTasks.remove(position);
                         adapter.notifyItemRemoved(position);
                         checkEmpty(emptyText);
                     }).addOnFailureListener(e -> {
-                        // Handle the error
                         Log.e("Firestore", "Error updating task: ", e);
                         Toast.makeText(getContext(), "Error updating task", Toast.LENGTH_SHORT).show();
-                        // Revert changes
                         task.setTaskDone(false);
                         task.setDoneDate(null);
                         adapter.notifyItemChanged(position);

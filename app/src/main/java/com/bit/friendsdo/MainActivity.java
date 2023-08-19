@@ -1,10 +1,5 @@
 package com.bit.friendsdo;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -14,24 +9,25 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private static final String PREF_NAME = "MyPref";
     private static final String KEY_NAME = "user_name";
+    private long backPressedTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Disable dark mode on devices running Android 10 (API level 29) and later
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
@@ -44,12 +40,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.nav_bar);
         bottomNavigationView.setItemActiveIndicatorEnabled(false);
 
-        // Set the initial fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame, new TaskListFragment())
                 .commit();
 
-        // Handle item clicks in the bottom navigation
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             Fragment selectedFragment = null;
 
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonSave = dialogView.findViewById(R.id.buttonSave);
 
         final AlertDialog dialog = builder.create();
-        dialog.setCancelable(false); // Prevent dismissing the dialog by clicking outside
+        dialog.setCancelable(false);
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,12 +85,21 @@ public class MainActivity extends AppCompatActivity {
                     editor.apply();
                     dialog.dismiss();
                 } else {
-                    // Show an error message indicating that the name is required
                     editTextName.setError("Name is required");
                 }
             }
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
 }

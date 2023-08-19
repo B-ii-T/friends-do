@@ -26,59 +26,50 @@ public class SplashScreen extends AppCompatActivity {
         animationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                // Animation started
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                // Animation ended, navigate to the next screen
                 Intent intent = new Intent(SplashScreen.this, MainActivity.class);
                 startActivity(intent);
-                finish(); // Optional: Close the current activity if needed
+                finish();
             }
 
             @Override
             public void onAnimationCancel(Animator animator) {
-                // Animation canceled
             }
 
             @Override
             public void onAnimationRepeat(Animator animator) {
-                // Animation repeated
             }
         });
 
-        // Create an ObjectAnimator to fade in the TextView
         ObjectAnimator fadeInAnimator = ObjectAnimator.ofFloat(textView, "alpha", 0f, 1f);
         ObjectAnimator fadeInAnimatorImg = ObjectAnimator.ofFloat(bitLogo, "alpha", 0f, 1f);
-        fadeInAnimator.setDuration(1000); // Set the duration of the fade-in animation
-        fadeInAnimatorImg.setDuration(1000); // Set the duration of the fade-in animation
-        fadeInAnimator.setStartDelay(300); // Set a delay before the animation starts
-        fadeInAnimatorImg.setStartDelay(800); // Set a delay before the animation starts
+        fadeInAnimator.setDuration(1000);
+        fadeInAnimatorImg.setDuration(1000);
+        fadeInAnimator.setStartDelay(300);
+        fadeInAnimatorImg.setStartDelay(800);
         fadeInAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                // Make the TextView visible when the animation starts
                 textView.setVisibility(View.VISIBLE);
                 bitLogo.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                // Animation ended, no additional action needed
             }
 
             @Override
             public void onAnimationCancel(Animator animator) {
-                // Animation canceled, no additional action needed
             }
 
             @Override
             public void onAnimationRepeat(Animator animator) {
-                // Animation repeated, no additional action needed
             }
         });
-        fadeInAnimator.start(); // Start the animation
-        fadeInAnimatorImg.start(); // Start the animation
+        fadeInAnimator.start();
+        fadeInAnimatorImg.start();
     }
 }
