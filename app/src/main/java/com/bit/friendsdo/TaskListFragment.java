@@ -36,6 +36,7 @@ public class TaskListFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference taskCollection = db.collection("FriendTask");
     FriendTaskAdapter adapter = new FriendTaskAdapter(friendTasks);
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -43,12 +44,22 @@ public class TaskListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.task_list_fragment, container, false);
 
         recyclerView = rootView.findViewById(R.id.task_recycler_view);
+        progressBar = rootView.findViewById(R.id.progress_bar);
+
         TextView emptyText = rootView.findViewById(R.id.no_tasks);
         checkEmpty(emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        emptyText.setVisibility(View.GONE);
+
+
         taskCollection.get().addOnCompleteListener(task -> {
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            checkEmpty(emptyText);
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 for (QueryDocumentSnapshot document : querySnapshot) {
@@ -61,12 +72,12 @@ public class TaskListFragment extends Fragment {
                     if (!taskDone) {
                         friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate));
                         adapter.notifyDataSetChanged();
-                        checkEmpty(emptyText);
                     }
                 }
             } else {
                 Log.e("Firestore", "Error getting documents: ", task.getException());
                 Toast.makeText(getContext(), "Err fetching", Toast.LENGTH_SHORT).show();
+                checkEmpty(emptyText);
             }
         });
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ public class TaskDoneListFragment extends Fragment {
     CollectionReference taskCollection = db.collection("FriendTask");
     FriendTaskAdapter adapter = new FriendTaskAdapter(friendTasks);
 
+    ProgressBar doneSpinner;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,12 +42,20 @@ public class TaskDoneListFragment extends Fragment {
 
 
         recyclerView = rootView.findViewById(R.id.done_task_recycler_view);
+        doneSpinner = rootView.findViewById(R.id.progress_bar_done);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         checkEmpty(emptyDoneText);
 
+        doneSpinner.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        emptyDoneText.setVisibility(View.GONE);
+
         taskCollection.get().addOnCompleteListener(task -> {
+            doneSpinner.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            checkEmpty(emptyDoneText);
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 for (QueryDocumentSnapshot document : querySnapshot) {
