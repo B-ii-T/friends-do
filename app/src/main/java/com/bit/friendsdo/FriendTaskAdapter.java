@@ -3,6 +3,7 @@ package com.bit.friendsdo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
         this.friendTasks = friendTasks;
     }
 
+    private SharedPreferences sharedPreferences;
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,7 +58,13 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
 
         // Set click listener
         holder.itemView.setOnLongClickListener(view -> {
-            showDeleteConfirmationDialog(holder.itemView, friendTask.getId());
+            //get username from shared preferences and assign it to name
+            sharedPreferences = holder.itemView.getContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+            if (friendTask.getOwner().equals(sharedPreferences.getString("user_name", ""))) {
+                showDeleteConfirmationDialog(holder.itemView, friendTask.getId());
+            } else {
+                Toast.makeText(view.getContext(), "You can't delete a task you did not create", Toast.LENGTH_SHORT).show();
+            }
             return true;
         });
     }
@@ -87,6 +95,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         deleteTaskById(taskId, context); // Pass the context here
                     }
                 })
@@ -108,7 +117,6 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                     Toast.makeText(context, "Error deleting task", Toast.LENGTH_SHORT).show();
                 });
     }
-
 
 
     private int findPositionById(String taskId) {
