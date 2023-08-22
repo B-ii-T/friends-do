@@ -13,7 +13,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+
+import com.cloudinary.Cloudinary;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_NAME = "MyPref";
     private static final String KEY_NAME = "user_name";
     private long backPressedTime = 0;
+    public static Cloudinary cloudinary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+
+        Map config = new HashMap();
+        config.put("cloud_name", "dqheqc4tf");
+        config.put("api_key", "165579376195622");
+        config.put("api_secret", "r5CFhgGt8rh0T-8xDoftX_DhJj4");
+
+        cloudinary = new Cloudinary(config);
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 

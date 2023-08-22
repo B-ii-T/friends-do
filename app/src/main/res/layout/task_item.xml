@@ -48,6 +48,14 @@
                 android:textAlignment="textEnd"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"/>
+            <ImageView
+                android:id="@+id/image_indicator"
+                android:layout_toStartOf="@id/creation_date_textview"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/image_indicator"/>
         </RelativeLayout>
 
         <TextView
@@ -58,6 +66,16 @@
             android:layout_height="wrap_content"
             android:text="Task text"
             android:layout_below="@id/info_container"/>
+        
+        <ImageView
+            android:id="@+id/task_img"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:layout_below="@id/task_text_textview"
+            android:layout_above="@id/done_owner_text_view"/>
 
         <TextView
             android:id="@+id/done_owner_text_view"

@@ -10,16 +10,18 @@ public class FriendTask {
     private boolean taskDone;
     private Date doneDate;
     private String doneOwner;
+    private String imageUrl;
 
-    public FriendTask(String taskText, Date creationDate, String owner, boolean taskDone, Date doneDate, String doneOwner) {
+    public FriendTask(String taskText, Date creationDate, String owner, boolean taskDone, Date doneDate, String doneOwner, String imageUrl) {
         this.taskText = taskText;
         this.creationDate = creationDate;
         this.owner = owner;
         this.taskDone = taskDone;
         this.doneDate = doneDate;
         this.doneOwner = doneOwner;
+        this.imageUrl = imageUrl;
     }
-    public FriendTask(String id, String taskText, Date creationDate, String owner, boolean taskDone, Date doneDate, String doneOwner) {
+    public FriendTask(String id, String taskText, Date creationDate, String owner, boolean taskDone, Date doneDate, String doneOwner, String imageUrl) {
         this.id = id;
         this.taskText = taskText;
         this.creationDate = creationDate;
@@ -27,6 +29,7 @@ public class FriendTask {
         this.taskDone = taskDone;
         this.doneDate = doneDate;
         this.doneOwner = doneOwner;
+        this.imageUrl = imageUrl;
     }
 
     public String getId() {
@@ -55,6 +58,10 @@ public class FriendTask {
 
     public String getDoneOwner() {
         return doneOwner;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public void setTaskDone(boolean taskDone) {

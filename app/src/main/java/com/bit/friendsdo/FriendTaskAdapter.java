@@ -1,12 +1,15 @@
 package com.bit.friendsdo;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -28,6 +32,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
     }
 
     private SharedPreferences sharedPreferences;
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,16 +49,13 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
 
         holder.ownerText.setText(friendTask.getOwner());
         holder.tasktext.setText(friendTask.getTaskText());
+
         if (friendTask.isTaskDone()) {
             String formattedDoneDate = dateFormat.format(friendTask.getDoneDate());
             String formattedDoneTime = timeFormat.format(friendTask.getDoneDate());
             holder.dateText.setText(formattedDoneDate);
             holder.timeText.setText(formattedDoneTime);
-            if(friendTask.getDoneOwner().equals("")){
-                holder.doneOwnerText.setVisibility(View.GONE);
-            }else{
-                holder.doneOwnerText.setText(friendTask.getDoneOwner());
-            }
+            holder.doneOwnerText.setText(friendTask.getDoneOwner());
         } else {
             String formattedCreationDate = dateFormat.format(friendTask.getCreationDate());
             String formattedCreationTime = timeFormat.format(friendTask.getCreationDate());
@@ -62,6 +64,37 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             holder.doneOwnerText.setVisibility(View.GONE);
         }
 
+        // Handle imgIndicator visibility based on imageUrl
+        if (friendTask.getImageUrl() == null) {
+            holder.imgIndicator.setVisibility(View.GONE);
+        } else {
+            holder.imgIndicator.setVisibility(View.VISIBLE);
+        }
+
+        // Set click listener for image toggle
+        holder.itemView.setOnClickListener(v -> {
+            if (friendTask.getImageUrl() == null) {
+                holder.taskImg.setVisibility(View.GONE);
+            } else {
+                if (holder.taskImg.getVisibility() == View.VISIBLE) {
+                    holder.taskImg.setVisibility(View.GONE);
+                } else {
+                    holder.taskImg.setVisibility(View.VISIBLE);
+                    Picasso.get()
+                            .load(friendTask.getImageUrl())
+                            .placeholder(R.drawable.friendsdo_logo) // Optional: Placeholder image while loading
+                            .error(R.drawable.add_photo) // Optional: Image to display in case of loading error
+                            .into(holder.taskImg);
+                }
+            }
+        });
+
+        holder.taskImg.setOnClickListener(v -> {
+            Toast.makeText(v.getContext(), "Image clicked", Toast.LENGTH_SHORT).show();
+            showImageDialog(friendTask.getImageUrl(), v.getContext());
+        });
+
+        // Handle long click listener for deleting tasks
         holder.itemView.setOnLongClickListener(view -> {
             sharedPreferences = holder.itemView.getContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
             if (friendTask.getOwner().equals(sharedPreferences.getString("user_name", ""))) {
@@ -73,6 +106,17 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
         });
     }
 
+    private void showImageDialog(String imageUrl, Context context) {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_image_preview);
+
+        ImageView imageView = dialog.findViewById(R.id.imageView);
+        Picasso.get().load(imageUrl).into(imageView);
+
+        dialog.show();
+    }
+
     @Override
     public int getItemCount() {
         return friendTasks.size();
@@ -80,6 +124,7 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView ownerText, tasktext, dateText, timeText, doneOwnerText;
+        ImageView taskImg, imgIndicator;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -88,6 +133,8 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
             dateText = itemView.findViewById(R.id.creation_date_textview);
             timeText = itemView.findViewById(R.id.timestamp_text_view);
             doneOwnerText = itemView.findViewById(R.id.done_owner_text_view);
+            taskImg = itemView.findViewById(R.id.task_img);
+            imgIndicator = itemView.findViewById(R.id.image_indicator);
         }
     }
 
@@ -100,7 +147,6 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         deleteTaskById(taskId, context);
                     }
                 })
@@ -114,6 +160,8 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                     int position = findPositionById(taskId);
                     if (position != -1) {
                         friendTasks.remove(position);
+                        TaskListFragment.checkEmpty(TaskListFragment.emptyText);
+                        TaskDoneListFragment.checkEmpty(TaskDoneListFragment.emptyDoneText);
                         notifyItemRemoved(position);
                         Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show();
                     }
@@ -123,13 +171,14 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                 });
     }
 
-
     private int findPositionById(String taskId) {
         for (int i = 0; i < friendTasks.size(); i++) {
             if (friendTasks.get(i).getId().equals(taskId)) {
                 return i;
             }
         }
+        TaskListFragment.checkEmpty(TaskListFragment.emptyText);
+        TaskDoneListFragment.checkEmpty(TaskDoneListFragment.emptyDoneText);
         return -1;
     }
 }

@@ -70,8 +70,9 @@ public class TaskListFragment extends Fragment {
                     Date creationDate = document.getDate("creationDate");
                     Date doneDate = document.getDate("doneDate");
                     String doneOwnwe = document.getString("doneOwner");
+                    String imageUrl = document.getString("imageUrl");
                     if (!taskDone) {
-                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate, doneOwnwe));
+                        friendTasks.add(new FriendTask(id, taskText, creationDate, owner, taskDone, doneDate, doneOwnwe, imageUrl));
                         adapter.notifyDataSetChanged();
                         checkEmpty(emptyText);
                     }
