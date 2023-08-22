@@ -82,15 +82,14 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                     holder.taskImg.setVisibility(View.VISIBLE);
                     Picasso.get()
                             .load(friendTask.getImageUrl())
-                            .placeholder(R.drawable.friendsdo_logo) // Optional: Placeholder image while loading
-                            .error(R.drawable.add_photo) // Optional: Image to display in case of loading error
+                            .placeholder(R.drawable.photo_placeholder) // Optional: Placeholder image while loading
+                            .error(R.drawable.photo_error) // Optional: Image to display in case of loading error
                             .into(holder.taskImg);
                 }
             }
         });
 
         holder.taskImg.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Image clicked", Toast.LENGTH_SHORT).show();
             showImageDialog(friendTask.getImageUrl(), v.getContext());
         });
 
@@ -160,9 +159,11 @@ public class FriendTaskAdapter extends RecyclerView.Adapter<FriendTaskAdapter.Vi
                     int position = findPositionById(taskId);
                     if (position != -1) {
                         friendTasks.remove(position);
-                        TaskListFragment.checkEmpty(TaskListFragment.emptyText);
-                        TaskDoneListFragment.checkEmpty(TaskDoneListFragment.emptyDoneText);
                         notifyItemRemoved(position);
+                        if (TaskListFragment.emptyText != null && TaskDoneListFragment.emptyDoneText != null) {
+                            TaskListFragment.checkEmpty(TaskListFragment.emptyText);
+                            TaskDoneListFragment.checkEmpty(TaskDoneListFragment.emptyDoneText);
+                        }
                         Toast.makeText(context, "Task deleted", Toast.LENGTH_SHORT).show();
                     }
                 })

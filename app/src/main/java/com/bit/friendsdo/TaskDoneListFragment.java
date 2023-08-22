@@ -42,17 +42,17 @@ public class TaskDoneListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.done_task_list_fragment, container, false);
         emptyDoneText = rootView.findViewById(R.id.no_done_tasks);
 
+        checkEmpty(emptyDoneText);
 
         recyclerView = rootView.findViewById(R.id.done_task_recycler_view);
         doneSpinner = rootView.findViewById(R.id.progress_bar_done);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        checkEmpty(emptyDoneText);
-
         doneSpinner.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         emptyDoneText.setVisibility(View.GONE);
+
 
         taskCollection.orderBy("doneDate", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
             doneSpinner.setVisibility(View.GONE);
